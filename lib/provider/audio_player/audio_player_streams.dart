@@ -53,6 +53,11 @@ class AudioPlayerStreamListeners {
         if (audioPlayerState.activeTrack == null) return;
         notificationService.addTrack(audioPlayerState.activeTrack!);
         discord.updatePresence(audioPlayerState.activeTrack!);
+
+        // Sync the full queue to the notification service for Android Auto
+        if (audioPlayerState.tracks.isNotEmpty) {
+          notificationService.syncQueue(audioPlayerState.tracks);
+        }
       } catch (e, stack) {
         AppLogger.reportError(e, stack);
       }

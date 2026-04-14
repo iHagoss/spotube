@@ -37,6 +37,7 @@ class AudioServices with WidgetsBindingObserver {
               androidNotificationOngoing: false,
               androidStopForegroundOnPause: false,
               androidNotificationChannelDescription: "Spotube Media Controls",
+              androidEnableQueue: true,
             ),
           )
         : null;
@@ -58,6 +59,26 @@ class AudioServices with WidgetsBindingObserver {
       ),
       playable: true,
     ));
+  }
+
+  /// Sync the full queue to the notification/Android Auto service
+  void syncQueue(List<SpotubeTrackObject> tracks) {
+    final items = tracks
+        .map(
+          (track) => MediaItem(
+            id: track.id,
+            album: track.album.name,
+            title: track.name,
+            artist: track.artists.asString(),
+            duration: Duration(milliseconds: track.durationMs),
+            artUri: (track.album.images).asUri(
+              placeholder: ImagePlaceholder.albumArt,
+            ),
+            playable: true,
+          ),
+        )
+        .toList();
+    mobile?.syncQueue(items);
   }
 
   void activateSession() {
